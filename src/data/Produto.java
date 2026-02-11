@@ -13,6 +13,7 @@ public class Produto {
     private String nomeProduto;
     private double preco;
     private int quantidadeEstoque;
+    private Categoria categoria;
     
     
     public Produto(int idProduto,String nomeProduto,double preco,int quantidadeEstoque, Categoria categoria){
@@ -53,6 +54,14 @@ public class Produto {
 
     public void setQuantidadeEstoque(int quantidadeEstoque) {
         this.quantidadeEstoque = quantidadeEstoque;
+    }
+
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
     }
     
     
