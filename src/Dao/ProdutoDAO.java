@@ -4,6 +4,7 @@
  */
 package Dao;
 
+import data.Categoria;
 import data.Produto;
 import java.util.ArrayList;
 import java.util.List;
