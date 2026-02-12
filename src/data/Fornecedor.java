@@ -45,6 +45,10 @@ public class Fornecedor {
         this.cnpj = cnpj;
     }
     
-    
+   @Override
+public String toString() {
+    return nomeFornecedor;
+}
+ 
     
 }
