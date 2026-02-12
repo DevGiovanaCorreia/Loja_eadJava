@@ -354,7 +354,7 @@ private void carregarCategorias() {
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnLimpar;
-    private javax.swing.JComboBox<Categoria cmbCategoria;
+    private javax.swing.JComboBox<Categoria> cmbCategoria;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
