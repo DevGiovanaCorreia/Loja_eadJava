@@ -4,6 +4,8 @@
  */
 package data;
 
+import java.util.List;
+
 /**
  *
  * @author vitor
@@ -13,6 +15,7 @@ public class Venda {
     private String formaDePagamento;
     private Funcionario funcionario;
     private Cliente cliente;
+    private List<ItemVenda> itens;
     
     
      public Venda(int idVenda, String formaDePagamento, Funcionario funcionario, Cliente cliente) {
@@ -53,7 +56,29 @@ public class Venda {
     public void setCliente(Cliente cliente) {
         this.cliente = cliente;
     }
+
+    public List<ItemVenda> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemVenda> itens) {
+        this.itens = itens;
+    }
      
      
-     
+    
+    public void adicionarItem(ItemVenda item) {
+        itens.add(item);
+    }
+    
+ public double getTotal() {
+    double total = 0;
+
+    for (ItemVenda item : itens) {
+        total += item.getSubtotal();
+    }
+
+    return total;
+}
+    
 }
