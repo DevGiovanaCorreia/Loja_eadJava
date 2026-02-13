@@ -4,13 +4,15 @@
  */
 package data;
 
+import java.io.Serializable;
+
 
 
 /**
  *
  * @author vitor
  */
-public class Cliente {
+public class Cliente implements Serializable {
      private int idCliente;
     private String nomeCliente;
     private String cpf;

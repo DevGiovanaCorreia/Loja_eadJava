@@ -5,6 +5,10 @@
 package Dao;
 
 import data.Fornecedor;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,10 +18,18 @@ import java.util.List;
  */
 public class FornecedorDAO {
     private static List<Fornecedor> listaFornecedores = new ArrayList<>();
+     private final String ARQUIVO = "fornecedores.dat";
+     
+     
+public FornecedorDAO() {
+        carregarArquivo();
+    }
+
 
     
     public void adicionar(Fornecedor fornecedor) {
         listaFornecedores.add(fornecedor);
+        salvarArquivo();
     }
 
    
@@ -36,22 +48,42 @@ public class FornecedorDAO {
     }
 
  
-    public boolean atualizar(Fornecedor fornecedorAtualizado) {
+  public void atualizar(Fornecedor f) {
         for (int i = 0; i < listaFornecedores.size(); i++) {
-            if (listaFornecedores.get(i).getIdFornecedor()
-                    == fornecedorAtualizado.getIdFornecedor()) {
-
-                listaFornecedores.set(i, fornecedorAtualizado);
-                return true;
+            if (listaFornecedores.get(i).getIdFornecedor() == f.getIdFornecedor()) {
+                listaFornecedores.set(i, f);
+                break;
             }
         }
-        return false;
+        salvarArquivo();
     }
 
-   
-    public boolean remover(int idFornecedor) {
-        return listaFornecedores.removeIf(
-            f -> f.getIdFornecedor() == idFornecedor
-        );
-    } 
+    
+   public void remover(int id) {
+        listaFornecedores.removeIf(c -> c.getIdFornecedor() == id);
+        salvarArquivo();
+    }
+    
+    
+  private void salvarArquivo() {
+        try (ObjectOutputStream oos =
+                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
+
+            oos.writeObject(listaFornecedores);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarArquivo() {
+        try (ObjectInputStream ois =
+                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
+
+            listaFornecedores = (List<Fornecedor>) ois.readObject();
+
+        } catch (Exception e) {
+            listaFornecedores = new ArrayList<>();
+        }
+    }    
 }

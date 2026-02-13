@@ -4,13 +4,14 @@
  */
 package data;
 
+import java.io.Serializable;
 import java.util.List;
 
 /**
  *
  * @author vitor
  */
-public class Venda {
+public class Venda implements Serializable {
        private int idVenda;
     private String formaDePagamento;
     private Funcionario funcionario;

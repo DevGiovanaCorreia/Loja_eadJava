@@ -7,6 +7,10 @@ package Dao;
 import data.Cliente;
 import data.Funcionario;
 import data.Venda;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,10 +20,17 @@ import java.util.List;
  */
 public class VendaDAO {
      private static List<Venda> listaVendas = new ArrayList<>();
+private final String ARQUIVO = "vendas.dat";
 
+
+
+  public VendaDAO() {
+        carregarArquivo();
+    }
   
     public void adicionar(Venda venda) {
         listaVendas.add(venda);
+        salvarArquivo();
     }
 
   
@@ -64,21 +75,43 @@ public class VendaDAO {
     }
 
    
-    public boolean atualizar(Venda vendaAtualizada) {
+      public void atualizar(Venda v) {
         for (int i = 0; i < listaVendas.size(); i++) {
-            if (listaVendas.get(i).getIdVenda()
-                    == vendaAtualizada.getIdVenda()) {
-
-                listaVendas.set(i, vendaAtualizada);
-                return true;
+            if (listaVendas.get(i).getIdVenda() == v.getIdVenda()) {
+                listaVendas.set(i, v);
+                break;
             }
         }
-        return false;
+        salvarArquivo();
     }
 
-    public boolean remover(int idVenda) {
-        return listaVendas.removeIf(
-            v -> v.getIdVenda() == idVenda
-        );
+    
+   public void remover(int id) {
+        listaVendas.removeIf(c -> c.getIdVenda() == id);
+        salvarArquivo();
+    }
+    
+    
+    
+     private void salvarArquivo() {
+        try (ObjectOutputStream oos =
+                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
+
+            oos.writeObject(listaVendas);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarArquivo() {
+        try (ObjectInputStream ois =
+                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
+
+            listaVendas = (List<Venda>) ois.readObject();
+
+        } catch (Exception e) {
+            listaVendas = new ArrayList<>();
+        }
     }
 }

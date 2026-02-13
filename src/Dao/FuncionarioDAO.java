@@ -5,6 +5,10 @@
 package Dao;
 
 import data.Funcionario;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +19,15 @@ import java.util.List;
 public class FuncionarioDAO {
  
     private static List<Funcionario> listaFuncionarios = new ArrayList<>();
+private final String ARQUIVO = "funcionarios.dat"; 
 
+ public FuncionarioDAO() {
+        carregarArquivo();
+    }
     
     public void adicionar(Funcionario funcionario) {
         listaFuncionarios.add(funcionario);
+        salvarArquivo();
     }
 
     
@@ -37,22 +46,42 @@ public class FuncionarioDAO {
     }
 
     
-    public boolean atualizar(Funcionario funcionarioAtualizado) {
+     public void atualizar(Funcionario f) {
         for (int i = 0; i < listaFuncionarios.size(); i++) {
-            if (listaFuncionarios.get(i).getIdFuncionario()
-                    == funcionarioAtualizado.getIdFuncionario()) {
-
-                listaFuncionarios.set(i, funcionarioAtualizado);
-                return true;
+            if (listaFuncionarios.get(i).getIdFuncionario() == f.getIdFuncionario()) {
+                listaFuncionarios.set(i, f);
+                break;
             }
         }
-        return false;
+        salvarArquivo();
     }
 
-  
-    public boolean remover(int idFuncionario) {
-        return listaFuncionarios.removeIf(
-            f -> f.getIdFuncionario() == idFuncionario
-        );
+    
+   public void remover(int id) {
+        listaFuncionarios.removeIf(c -> c.getIdFuncionario() == id);
+        salvarArquivo();
+    }
+    
+    
+    private void salvarArquivo() {
+        try (ObjectOutputStream oos =
+                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
+
+            oos.writeObject(listaFuncionarios);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void carregarArquivo() {
+        try (ObjectInputStream ois =
+                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
+
+            listaFuncionarios = (List<Funcionario>) ois.readObject();
+
+        } catch (Exception e) {
+            listaFuncionarios = new ArrayList<>();
+        }
     }
 }

@@ -4,12 +4,14 @@
  */
 package data;
 
+import java.io.Serializable;
+
 
 /**
  *
  * @author vitor
  */
-public class Fornecedor {
+public class Fornecedor  implements Serializable{
      private int idFornecedor;
     private String nomeFornecedor;
     private String cnpj;

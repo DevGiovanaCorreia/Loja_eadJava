@@ -4,11 +4,14 @@
  */
 package data;
 
+import java.io.Serializable;
+
 /**
  *
  * @author vitor
  */
-public class Funcionario {
+public class Funcionario  implements Serializable
+{
     private int idFuncionario;
     private String nomeFuncionario;
     private String cpf;
