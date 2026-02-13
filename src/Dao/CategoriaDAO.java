@@ -84,7 +84,7 @@ public class CategoriaDAO {
         }
     }
 
-    // 🔥 CARREGAR DO ARQUIVO
+    
     private void carregarArquivo() {
         try (ObjectInputStream ois =
                  new ObjectInputStream(
