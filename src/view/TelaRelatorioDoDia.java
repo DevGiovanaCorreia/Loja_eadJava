@@ -8,6 +8,7 @@ import Dao.FuncionarioDAO;
 import Dao.VendaDAO;
 import data.Funcionario;
 import data.Venda;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
 /**
@@ -147,31 +148,36 @@ private void carregarFuncionarios() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGerarRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGerarRelatorioActionPerformed
-       DefaultTableModel model =
-        (DefaultTableModel) tabelaRelatorio.getModel();
-
+        DefaultTableModel model = (DefaultTableModel) tabelaRelatorio.getModel();
     model.setRowCount(0);
 
-    Funcionario funcionarioSelecionado =
-        (Funcionario) cmbFuncionario.getSelectedItem();
+   
+    Funcionario funcionarioSelecionado = (Funcionario) cmbFuncionario.getSelectedItem();
+    if (funcionarioSelecionado == null) {
+        JOptionPane.showMessageDialog(this, "Selecione um funcionário!");
+        return;
+    }
 
-    double total = 0;
+  
+    VendaDAO vendaDAO = new VendaDAO();
 
-    for (Venda v : new VendaDAO()
-            .buscarPorFuncionario(funcionarioSelecionado)) {
+    double totalDia = 0;
 
+    
+    for (Venda v : vendaDAO.buscarPorFuncionario(funcionarioSelecionado)) {
+        double totalVenda = v.getTotal(); 
         model.addRow(new Object[]{
             v.getIdVenda(),
             v.getCliente().getNomeCliente(),
             v.getFuncionario().getNomeFuncionario(),
-            v.getTotal()
+            String.format("%.2f", totalVenda)
         });
 
-        total += v.getTotal();
+        totalDia += totalVenda;
     }
 
-    lblTotalDia.setText("Total: R$ " +
-        String.format("%.2f", total));
+    lblTotalDia.setText("Total do dia: R$ " + String.format("%.2f", totalDia));
+
     }//GEN-LAST:event_btnGerarRelatorioActionPerformed
 
     /**

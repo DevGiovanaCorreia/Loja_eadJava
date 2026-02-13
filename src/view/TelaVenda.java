@@ -7,9 +7,14 @@ package view;
 import Dao.ClienteDAO;
 import Dao.FuncionarioDAO;
 import Dao.ProdutoDAO;
+import Dao.VendaDAO;
 import data.Cliente;
 import data.Funcionario;
+import data.ItemVenda;
 import data.Produto;
+import data.Venda;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 
@@ -44,7 +49,8 @@ private void carregarProdutos() {
 
 private void atualizarTotal() {
     lblTotal.setText("Total: R$ " + String.format("%.2f", total));
-}
+    jTextField1.setText(String.format("%.2f", total)); 
+            }
 
 private void limparVenda() {
     model.setRowCount(0);
@@ -95,6 +101,7 @@ private void limparVenda() {
         btnCancelar = new javax.swing.JButton();
         jLabel4 = new javax.swing.JLabel();
         lblTotal = new javax.swing.JLabel();
+        jTextField1 = new javax.swing.JTextField();
 
         jLabel6.setText("jLabel6");
 
@@ -238,7 +245,9 @@ private void limparVenda() {
                             .addComponent(btnAdicionar)))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(47, 47, 47)
-                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(lblTotal, javax.swing.GroupLayout.PREFERRED_SIZE, 37, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
@@ -257,7 +266,9 @@ private void limparVenda() {
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 289, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
-                .addComponent(lblTotal)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(lblTotal)
+                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFinalizar)
@@ -312,14 +323,37 @@ private void limparVenda() {
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarActionPerformed
-        if (model.getRowCount() == 0) {
+         if (model.getRowCount() == 0) {
         JOptionPane.showMessageDialog(this, "Adicione pelo menos um item");
         return;
     }
 
+    Cliente cliente = (Cliente) cmbCliente.getSelectedItem();
+    Funcionario funcionario = (Funcionario) cmbFuncionario.getSelectedItem();
+    String formaPagamento = txtFormaPagamento.getText();
+
+
+    List<ItemVenda> itens = new ArrayList<>();
+    for (int i = 0; i < model.getRowCount(); i++) {
+        Produto produto = new ProdutoDAO().buscarPorNome((String) model.getValueAt(i, 0));
+        int quantidade = (int) model.getValueAt(i, 1);
+        double precoUnitario = (double) model.getValueAt(i, 2);
+
+        ItemVenda item = new ItemVenda(i + 1, produto, quantidade, precoUnitario);
+        itens.add(item);
+    }
+
+   
+    int idVenda = new VendaDAO().listar().size() + 1; 
+    Venda venda = new Venda(idVenda, formaPagamento, funcionario, cliente, itens);
+
+    VendaDAO vendaDAO = new VendaDAO();
+    vendaDAO.adicionar(venda);
+
     JOptionPane.showMessageDialog(this, "Venda finalizada com sucesso!");
 
     limparVenda();
+      
     }//GEN-LAST:event_btnFinalizarActionPerformed
 
     private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
@@ -379,6 +413,7 @@ private void limparVenda() {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JTable jTable1;
+    private javax.swing.JTextField jTextField1;
     private javax.swing.JLabel lblTotal;
     private javax.swing.JTable tabelaVenda;
     private javax.swing.JTextField txtFormaPagamento;
