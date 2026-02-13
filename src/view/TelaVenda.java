@@ -349,7 +349,7 @@ private void limparVenda() {
 
   for (int i = 0; i < model.getRowCount(); i++) {
 
-    Produto produto = (Produto) model.getValueAt(i, 0); // agora é Produto
+    Produto produto = (Produto) model.getValueAt(i, 0); 
     int quantidade = (int) model.getValueAt(i, 1);
     double precoUnitario = (double) model.getValueAt(i, 2);
 
