@@ -6,6 +6,10 @@ package Dao;
 
 import data.Categoria;
 import data.Produto;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,10 +19,26 @@ import java.util.List;
  */
 public class ProdutoDAO {
     private static List<Produto> listaProdutos = new ArrayList<>();
+private final String ARQUIVO = "produtos.dat";
 
+
+public ProdutoDAO(){
+    carregarArquivo();
+}
  
     public void adicionar(Produto produto) {
         listaProdutos.add(produto);
+        salvarArquivo();
+    }
+    
+    public void atualizar(Produto p) {
+        for (int i = 0; i < listaProdutos.size(); i++) {
+            if (listaProdutos.get(i).getIdProduto() == p.getIdProduto()) {
+                listaProdutos.set(i, p);
+                break;
+            }
+        }
+        salvarArquivo();
     }
 
    
@@ -49,23 +69,12 @@ public class ProdutoDAO {
     }
 
  
-    public boolean atualizar(Produto produtoAtualizado) {
-        for (int i = 0; i < listaProdutos.size(); i++) {
-            if (listaProdutos.get(i).getIdProduto()
-                    == produtoAtualizado.getIdProduto()) {
-
-                listaProdutos.set(i, produtoAtualizado);
-                return true;
-            }
-        }
-        return false;
-    }
+    
 
     
-    public boolean remover(int idProduto) {
-        return listaProdutos.removeIf(
-            p -> p.getIdProduto() == idProduto
-        );
+   public void remover(int id) {
+        listaProdutos.removeIf(p -> p.getIdProduto() == id);
+        salvarArquivo();
     }
 
     
@@ -76,5 +85,32 @@ public class ProdutoDAO {
             return true;
         }
         return false;
+    }
+    
+    
+    private void salvarArquivo() {
+        try (ObjectOutputStream oos =
+                 new ObjectOutputStream(
+                     new FileOutputStream(ARQUIVO))) {
+
+            oos.writeObject(listaProdutos);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    
+     private void carregarArquivo() {
+        try (ObjectInputStream ois =
+                 new ObjectInputStream(
+                     new FileInputStream(ARQUIVO))) {
+
+            listaProdutos =
+                (List<Produto>) ois.readObject();
+
+        } catch (Exception e) {
+            listaProdutos = new ArrayList<>();
+        }
     }
 }
