@@ -11,6 +11,8 @@ import java.io.Serializable;
  * @author vitor
  */
 public class Produto implements Serializable {
+     
+    
     private int idProduto;
     private String nomeProduto;
     private double preco;

@@ -167,31 +167,38 @@ public class Menu extends javax.swing.JFrame {
 
     private void btnClienteActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClienteActionPerformed
           new TelaCliente().setVisible(true);
+          this.dispose();
         
     }//GEN-LAST:event_btnClienteActionPerformed
 
     private void btnFornecedorActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFornecedorActionPerformed
       new TelaFornecedor().setVisible(true);
+      this.dispose();
     }//GEN-LAST:event_btnFornecedorActionPerformed
 
     private void btnFuncionarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFuncionarioActionPerformed
      new TelaFuncionario().setVisible(true);
+     this.dispose();
     }//GEN-LAST:event_btnFuncionarioActionPerformed
 
     private void btnCategoriaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCategoriaActionPerformed
          new TelaCategoria().setVisible(true);
+         this.dispose();
     }//GEN-LAST:event_btnCategoriaActionPerformed
 
     private void btnProdutoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnProdutoActionPerformed
       new TelaProduto().setVisible(true);
+      this.dispose();
     }//GEN-LAST:event_btnProdutoActionPerformed
 
     private void btnRelatorioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRelatorioActionPerformed
        new TelaRelatorioDoDia().setVisible(true);
+       this.dispose();
     }//GEN-LAST:event_btnRelatorioActionPerformed
 
     private void btnVendaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVendaActionPerformed
           new TelaVenda().setVisible(true);
+          this.dispose();
     }//GEN-LAST:event_btnVendaActionPerformed
 
     /**

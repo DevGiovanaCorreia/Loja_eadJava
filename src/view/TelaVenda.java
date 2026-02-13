@@ -310,11 +310,11 @@ private void limparVenda() {
     double subtotal = produto.getPreco() * quantidade;
     total += subtotal;
 
-    model.addRow(new Object[]{
-        produto.getNomeProduto(),
-        quantidade,
-        produto.getPreco(),
-        subtotal
+   model.addRow(new Object[]{
+    produto,      
+    quantidade,
+    produto.getPreco(),
+    subtotal
     });
 
     atualizarTotal();
@@ -323,7 +323,7 @@ private void limparVenda() {
     }//GEN-LAST:event_btnAdicionarActionPerformed
 
     private void btnFinalizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFinalizarActionPerformed
-         if (model.getRowCount() == 0) {
+        if (model.getRowCount() == 0) {
         JOptionPane.showMessageDialog(this, "Adicione pelo menos um item");
         return;
     }
@@ -332,21 +332,25 @@ private void limparVenda() {
     Funcionario funcionario = (Funcionario) cmbFuncionario.getSelectedItem();
     String formaPagamento = txtFormaPagamento.getText();
 
-
+    
     List<ItemVenda> itens = new ArrayList<>();
-    for (int i = 0; i < model.getRowCount(); i++) {
-        Produto produto = new ProdutoDAO().buscarPorNome((String) model.getValueAt(i, 0));
-        int quantidade = (int) model.getValueAt(i, 1);
-        double precoUnitario = (double) model.getValueAt(i, 2);
+    ProdutoDAO produtoDAO = new ProdutoDAO();
 
-        ItemVenda item = new ItemVenda(i + 1, produto, quantidade, precoUnitario);
-        itens.add(item);
-    }
+  for (int i = 0; i < model.getRowCount(); i++) {
+
+    Produto produto = (Produto) model.getValueAt(i, 0); // agora é Produto
+    int quantidade = (int) model.getValueAt(i, 1);
+    double precoUnitario = (double) model.getValueAt(i, 2);
+
+    ItemVenda item = new ItemVenda(i + 1, produto, quantidade, precoUnitario);
+    itens.add(item);
+}
 
    
     int idVenda = new VendaDAO().listar().size() + 1; 
     Venda venda = new Venda(idVenda, formaPagamento, funcionario, cliente, itens);
 
+   
     VendaDAO vendaDAO = new VendaDAO();
     vendaDAO.adicionar(venda);
 

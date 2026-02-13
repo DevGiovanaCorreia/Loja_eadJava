@@ -4,11 +4,15 @@
  */
 package data;
 
+import java.io.Serializable;
+
 /**
  *
  * @author vitor
  */
-public class ItemVenda {
+public class ItemVenda  implements Serializable {
+    private static final long serialVersionUID = 1L;
+    
       private int idItem;
       private Produto produto;
       private int quantidade;

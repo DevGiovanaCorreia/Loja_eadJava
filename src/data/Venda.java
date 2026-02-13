@@ -19,11 +19,12 @@ public class Venda implements Serializable {
     private List<ItemVenda> itens;
     
     
-     public Venda(int idVenda, String formaDePagamento, Funcionario funcionario, Cliente cliente) {
+     public Venda(int idVenda, String formaDePagamento, Funcionario funcionario, Cliente cliente,List<ItemVenda> itens) {
         this.idVenda = idVenda;
         this.formaDePagamento = formaDePagamento;
         this.funcionario = funcionario;
         this.cliente = cliente;
+        this.itens=itens;
     }
 
     public int getIdVenda() {

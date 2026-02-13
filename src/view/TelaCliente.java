@@ -248,24 +248,38 @@ private void limparCampos() {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-        int linha = tabelaCliente.getSelectedRow();
+      int linha = tabelaCliente.getSelectedRow();
 
-    if (linha >= 0) {
-        int id = (int) tabelaCliente.getValueAt(linha, 0);
-
-        Cliente cliente = new Cliente(
-            id,
-            txtNome.getText(),
-            txtCpf.getText(),
-            txtEndereco.getText(),
-            txtTelefone.getText()
-        );
-
-        clienteDAO.atualizar(cliente);
-        atualizarTabela();
-    } else {
+    if (linha < 0) {
         JOptionPane.showMessageDialog(this, "Selecione um cliente na tabela");
+        return;
     }
+
+    
+    if (txtNome.getText().isEmpty() ||
+        txtCpf.getText().isEmpty() ||
+        txtEndereco.getText().isEmpty() ||
+        txtTelefone.getText().isEmpty()) {
+
+        JOptionPane.showMessageDialog(this, "Preencha todos os campos antes de atualizar!");
+        return;
+    }
+
+    int id = (int) tabelaCliente.getValueAt(linha, 0);
+
+    Cliente cliente = new Cliente(
+        id,
+        txtNome.getText(),
+        txtCpf.getText(),
+        txtEndereco.getText(),
+        txtTelefone.getText()
+    );
+
+    clienteDAO.atualizar(cliente);
+    atualizarTabela();
+    limparCampos();
+
+    JOptionPane.showMessageDialog(this, "Cliente atualizado com sucesso!");
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     private void btnCadastrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCadastrarActionPerformed

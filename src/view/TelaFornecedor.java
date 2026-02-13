@@ -228,23 +228,34 @@ private void limparCampos() {
     }//GEN-LAST:event_btnCadastrarActionPerformed
 
     private void btnAtualizarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAtualizarActionPerformed
-         int linha = tabelaFornecedor.getSelectedRow();
+       int linha = tabelaFornecedor.getSelectedRow();
 
-    if (linha >= 0) {
-        int id = (int) tabelaFornecedor.getValueAt(linha, 0);
-
-        Fornecedor fornecedor = new Fornecedor(
-            id,
-            txtNome.getText(),
-            txtCnpj.getText()
-           
-        );
-
-        fornecedorDAO.atualizar(fornecedor);
-        atualizarTabela();
-    } else {
-        JOptionPane.showMessageDialog(this, "Selecione um cliente na tabela");
+    if (linha == -1) {
+        JOptionPane.showMessageDialog(this, "Selecione um fornecedor na tabela!");
+        return;
     }
+
+  
+    if (txtNome.getText().isEmpty() ||
+        txtCnpj.getText().isEmpty()) {
+
+        JOptionPane.showMessageDialog(this, "Preencha todos os campos antes de atualizar!");
+        return;
+    }
+
+    int id = (int) tabelaFornecedor.getValueAt(linha, 0);
+
+    Fornecedor fornecedor = new Fornecedor(
+        id,
+        txtNome.getText(),
+        txtCnpj.getText()
+    );
+
+    fornecedorDAO.atualizar(fornecedor);
+    atualizarTabela();
+    limparCampos();
+
+    JOptionPane.showMessageDialog(this, "Fornecedor atualizado com sucesso!");
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
     private void btnExcluirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnExcluirActionPerformed
