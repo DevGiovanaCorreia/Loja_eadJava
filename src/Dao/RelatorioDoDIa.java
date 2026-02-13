@@ -6,6 +6,7 @@ package Dao;
 
 import data.Funcionario;
 import data.RelatorioDoDia;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,7 +14,7 @@ import java.util.List;
  *
  * @author vitor
  */
-public class RelatorioDoDIa {
+public class RelatorioDoDIa  {
       private static List<RelatorioDoDia> listaRelatorios = new ArrayList<>();
 
   

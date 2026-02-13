@@ -4,11 +4,13 @@
  */
 package data;
 
+import java.io.Serializable;
+
 /**
  *
  * @author vitor
  */
-public class RelatorioDoDia {
+public class RelatorioDoDia implements Serializable{
        private int idRelatorio;
       private Funcionario funcionario;
     
