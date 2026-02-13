@@ -102,6 +102,7 @@ private void limparVenda() {
         jLabel4 = new javax.swing.JLabel();
         lblTotal = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
+        btnVoltar = new javax.swing.JButton();
 
         jLabel6.setText("jLabel6");
 
@@ -219,6 +220,13 @@ private void limparVenda() {
 
         lblTotal.setText("Total:");
 
+        btnVoltar.setText("Voltar");
+        btnVoltar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnVoltarActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -229,7 +237,9 @@ private void limparVenda() {
                         .addGap(57, 57, 57)
                         .addComponent(btnFinalizar)
                         .addGap(18, 18, 18)
-                        .addComponent(btnCancelar))
+                        .addComponent(btnCancelar)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(btnVoltar))
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(29, 29, 29)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -272,7 +282,8 @@ private void limparVenda() {
                 .addGap(18, 18, 18)
                 .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnFinalizar)
-                    .addComponent(btnCancelar))
+                    .addComponent(btnCancelar)
+                    .addComponent(btnVoltar))
                 .addGap(28, 28, 28))
         );
 
@@ -364,6 +375,11 @@ private void limparVenda() {
          limparVenda();
     }//GEN-LAST:event_btnCancelarActionPerformed
 
+    private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
+         new Menu().setVisible(true);
+         this.dispose();
+    }//GEN-LAST:event_btnVoltarActionPerformed
+
     /**
      * @param args the command line arguments
      */
@@ -403,6 +419,7 @@ private void limparVenda() {
     private javax.swing.JButton btnAdicionar;
     private javax.swing.JButton btnCancelar;
     private javax.swing.JButton btnFinalizar;
+    private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox<Cliente> cmbCliente;
     private javax.swing.JComboBox<Funcionario> cmbFuncionario;
     private javax.swing.JComboBox<Produto> cmbProduto;
