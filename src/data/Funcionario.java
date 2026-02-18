@@ -23,6 +23,10 @@ public class Funcionario  implements Serializable
     this.cpf=cpf;
     
 }
+     
+     public Funcionario(){
+         
+     }
 
     public int getIdFuncionario() {
         return idFuncionario;

@@ -29,6 +29,11 @@ public class Produto implements Serializable {
         this.categoria=categoria;
         this.fornecedor=fornecedor;
     } 
+    
+    
+    public Produto(){
+        
+    }
 
     public int getIdProduto() {
         return idProduto;
@@ -69,6 +74,23 @@ public class Produto implements Serializable {
     public void setCategoria(Categoria categoria) {
         this.categoria = categoria;
     }
+
+    public int getQuantidade() {
+        return quantidade;
+    }
+
+    public Fornecedor getFornecedor() {
+        return fornecedor;
+    }
+
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
+    }
+
+    public void setFornecedor(Fornecedor fornecedor) {
+        this.fornecedor = fornecedor;
+    }
+    
     
   @Override
 public String toString() {

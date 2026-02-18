@@ -4,84 +4,133 @@
  */
 package Dao;
 
+import Conexão.Conexao;
 import data.Funcionario;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-
 /**
  *
  * @author vitor
  */
 public class FuncionarioDAO {
  
-    private static List<Funcionario> listaFuncionarios = new ArrayList<>();
-private final String ARQUIVO = "funcionarios.dat"; 
-
- public FuncionarioDAO() {
-        carregarArquivo();
-    }
-    
     public void adicionar(Funcionario funcionario) {
-        listaFuncionarios.add(funcionario);
-        salvarArquivo();
+
+        String sql = "INSERT INTO funcionario (nomeFuncionario, cpf, cargo, telefone) VALUES (?, ?)";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, funcionario.getNomeFuncionario());
+            stmt.setString(2, funcionario.getCpf());
+            
+           
+
+            stmt.executeUpdate();
+
+            System.out.println("Funcionário inserido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir funcionário: " + e.getMessage());
+        }
     }
 
     
     public List<Funcionario> listar() {
-        return listaFuncionarios;
+
+        List<Funcionario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM funcionario";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Funcionario f = new Funcionario();
+                f.setIdFuncionario(rs.getInt("idFuncionario"));
+                f.setNomeFuncionario(rs.getString("nomeFuncionario"));
+                f.setCpf(rs.getString("cpf"));
+               
+               
+
+                lista.add(f);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar funcionários: " + e.getMessage());
+        }
+
+        return lista;
     }
 
-    
+  
     public Funcionario buscarPorId(int idFuncionario) {
-        for (Funcionario f : listaFuncionarios) {
-            if (f.getIdFuncionario() == idFuncionario) {
-                return f;
+
+        String sql = "SELECT * FROM funcionario WHERE idFuncionario = ?";
+        Funcionario funcionario = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idFuncionario);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                funcionario = new Funcionario();
+                funcionario.setIdFuncionario(rs.getInt("idFuncionario"));
+                funcionario.setNomeFuncionario(rs.getString("nomeFuncionario"));
+                funcionario.setCpf(rs.getString("cpf"));
+                
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar funcionário: " + e.getMessage());
         }
-        return null;
+
+        return funcionario;
     }
 
     
-     public void atualizar(Funcionario f) {
-        for (int i = 0; i < listaFuncionarios.size(); i++) {
-            if (listaFuncionarios.get(i).getIdFuncionario() == f.getIdFuncionario()) {
-                listaFuncionarios.set(i, f);
-                break;
-            }
-        }
-        salvarArquivo();
-    }
+    public void atualizar(Funcionario funcionario) {
 
-    
-   public void remover(int id) {
-        listaFuncionarios.removeIf(c -> c.getIdFuncionario() == id);
-        salvarArquivo();
-    }
-    
-    
-    private void salvarArquivo() {
-        try (ObjectOutputStream oos =
-                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
+        String sql = "UPDATE funcionario SET nomeFuncionario = ?, cpf = ? WHERE idFuncionario = ?";
 
-            oos.writeObject(listaFuncionarios);
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            stmt.setString(1, funcionario.getNomeFuncionario());
+            stmt.setString(2, funcionario.getCpf());
+            stmt.setInt(3, funcionario.getIdFuncionario());
+
+            stmt.executeUpdate();
+
+            System.out.println("Funcionário atualizado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar funcionário: " + e.getMessage());
         }
     }
 
-    private void carregarArquivo() {
-        try (ObjectInputStream ois =
-                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
+    
+    public void remover(int idFuncionario) {
 
-            listaFuncionarios = (List<Funcionario>) ois.readObject();
+        String sql = "DELETE FROM funcionario WHERE idFuncionario = ?";
 
-        } catch (Exception e) {
-            listaFuncionarios = new ArrayList<>();
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idFuncionario);
+            stmt.executeUpdate();
+
+            System.out.println("Funcionário removido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover funcionário: " + e.getMessage());
         }
     }
 }

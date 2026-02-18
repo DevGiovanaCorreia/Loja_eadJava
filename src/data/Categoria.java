@@ -19,6 +19,10 @@ public class Categoria implements Serializable {
         this.idCategoria=idCategoria;
         this.produtoCategoria=produtoCategoria;
     }
+    
+    public Categoria(){
+        
+    }
 
     public int getIdCategoria() {
         return idCategoria;

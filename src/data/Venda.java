@@ -27,6 +27,9 @@ public class Venda implements Serializable {
         this.itens=itens;
     }
 
+     public Venda(){
+         
+     }
     public int getIdVenda() {
         return idVenda;
     }

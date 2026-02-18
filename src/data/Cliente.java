@@ -27,6 +27,10 @@ public class Cliente implements Serializable {
         this.endereco=endereco;
         this.telefone=telefone;
     }
+    
+    public Cliente(){
+        
+    }
 
     public int getIdCliente() {
         return idCliente;

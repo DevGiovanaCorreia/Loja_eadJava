@@ -4,12 +4,15 @@
  */
 package Dao;
 
+import Conexão.Conexao;
 import data.Categoria;
+import data.Fornecedor;
 import data.Produto;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,99 +21,157 @@ import java.util.List;
  * @author vitor
  */
 public class ProdutoDAO {
-    private static List<Produto> listaProdutos = new ArrayList<>();
-private final String ARQUIVO = "produtos.dat";
+       public void adicionar(Produto produto) {
 
+        String sql = "INSERT INTO produto (nomeProduto, preco, quantidade, idCategoria, idFornecedor) VALUES (?, ?, ?, ?,?)";
 
-public ProdutoDAO(){
-    carregarArquivo();
-}
- 
-    public void adicionar(Produto produto) {
-        listaProdutos.add(produto);
-        salvarArquivo();
-    }
-    
-    public void atualizar(Produto p) {
-        for (int i = 0; i < listaProdutos.size(); i++) {
-            if (listaProdutos.get(i).getIdProduto() == p.getIdProduto()) {
-                listaProdutos.set(i, p);
-                break;
-            }
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNomeProduto());
+            stmt.setDouble(2, produto.getPreco());
+            stmt.setInt(3, produto.getQuantidadeEstoque());
+            stmt.setInt(4, produto.getCategoria().getIdCategoria());
+            stmt.setInt(5,produto.getFornecedor().getIdFornecedor());
+
+            stmt.executeUpdate();
+
+            System.out.println("Produto inserido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir produto: " + e.getMessage());
         }
-        salvarArquivo();
     }
 
-   
+    
     public List<Produto> listar() {
-        return listaProdutos;
+
+        List<Produto> lista = new ArrayList<>();
+
+        String sql = "SELECT p.*, c.nomeCategoria, f.nomeFornecedor " +
+             "FROM produto p " +
+             "JOIN categoria c ON p.idCategoria = c.idCategoria " +
+             "JOIN fornecedor f ON p.idFornecedor = f.idFornecedor";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Categoria categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+
+                Fornecedor fornecedor = new Fornecedor();
+                fornecedor.setIdFornecedor(rs.getInt("idFornecedor"));
+                fornecedor.setNomeFornecedor(rs.getString("nomeFornecedor"));
+                
+                
+                Produto p = new Produto();
+                p.setIdProduto(rs.getInt("idProduto"));
+                p.setNomeProduto(rs.getString("nomeProduto"));
+                p.setPreco(rs.getDouble("preco"));
+                p.setQuantidadeEstoque(rs.getInt("quantidadeEstoque"));
+                p.setCategoria(categoria);
+                p.setFornecedor(fornecedor);
+
+                lista.add(p);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar produtos: " + e.getMessage());
+        }
+
+        return lista;
     }
 
-  
+    
     public Produto buscarPorId(int idProduto) {
-        for (Produto p : listaProdutos) {
-            if (p.getIdProduto() == idProduto) {
-                return p;
+
+        String sql = "SELECT * FROM produto WHERE idProduto = ?";
+        Produto produto = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idProduto);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                produto = new Produto();
+                produto.setIdProduto(rs.getInt("idProduto"));
+                produto.setNomeProduto(rs.getString("nomeProduto"));
+                produto.setPreco(rs.getDouble("preco"));
+                produto.setQuantidadeEstoque(rs.getInt("quantidadeEstoque"));
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar produto: " + e.getMessage());
         }
-        return null;
-    }
 
- 
-    public List<Produto> buscarPorCategoria(Categoria categoria) {
-        List<Produto> resultado = new ArrayList<>();
-
-        for (Produto p : listaProdutos) {
-            if (p.getCategoria().equals(categoria)) {
-                resultado.add(p);
-            }
-        }
-        return resultado;
-    }
-
- 
-    
-
-    
-   public void remover(int id) {
-        listaProdutos.removeIf(p -> p.getIdProduto() == id);
-        salvarArquivo();
+        return produto;
     }
 
     
-    public boolean atualizarEstoque(int idProduto, int novaQuantidade) {
-        Produto p = buscarPorId(idProduto);
-        if (p != null) {
-            p.setQuantidadeEstoque(novaQuantidade);
-            return true;
-        }
-        return false;
-    }
-    
-    
-    private void salvarArquivo() {
-        try (ObjectOutputStream oos =
-                 new ObjectOutputStream(
-                     new FileOutputStream(ARQUIVO))) {
+    public void atualizar(Produto produto) {
 
-            oos.writeObject(listaProdutos);
+        String sql = "UPDATE produto SET nomeProduto = ?, preco = ?, quantidade = ?, idCategoria = ? , idFornecedor = ? WHERE idProduto = ?";
 
-        } catch (Exception e) {
-            e.printStackTrace();
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, produto.getNomeProduto());
+            stmt.setDouble(2, produto.getPreco());
+            stmt.setInt(3, produto.getQuantidadeEstoque());
+            stmt.setInt(4, produto.getCategoria().getIdCategoria());
+            stmt.setInt(5,produto.getFornecedor().getIdFornecedor());
+            stmt.setInt(6, produto.getIdProduto());
+
+            stmt.executeUpdate();
+
+            System.out.println("Produto atualizado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar produto: " + e.getMessage());
         }
     }
-    
-    
-     private void carregarArquivo() {
-        try (ObjectInputStream ois =
-                 new ObjectInputStream(
-                     new FileInputStream(ARQUIVO))) {
 
-            listaProdutos =
-                (List<Produto>) ois.readObject();
+    
+    public void remover(int idProduto) {
 
-        } catch (Exception e) {
-            listaProdutos = new ArrayList<>();
+        String sql = "DELETE FROM produto WHERE idProduto = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idProduto);
+            stmt.executeUpdate();
+
+            System.out.println("Produto removido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover produto: " + e.getMessage());
+        }
+    }
+
+    
+    public void atualizarEstoque(int idProduto, int novaQuantidade) {
+
+        String sql = "UPDATE produto SET quantidade = ? WHERE idProduto = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, novaQuantidade);
+            stmt.setInt(2, idProduto);
+
+            stmt.executeUpdate();
+
+            System.out.println("Estoque atualizado!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar estoque: " + e.getMessage());
         }
     }
 }

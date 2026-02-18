@@ -4,11 +4,13 @@
  */
 package Dao;
 
+import Conexão.Conexao;
 import data.Fornecedor;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,73 +19,116 @@ import java.util.List;
  * @author vitor
  */
 public class FornecedorDAO {
-    private static List<Fornecedor> listaFornecedores = new ArrayList<>();
-     private final String ARQUIVO = "fornecedores.dat";
-     
-     
-public FornecedorDAO() {
-        carregarArquivo();
-    }
+   public void adicionar(Fornecedor fornecedor) {
 
+        String sql = "INSERT INTO fornecedor (nomeFornecedor, cnpj) VALUES (?, ?)";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, fornecedor.getNomeFornecedor());
+            stmt.setString(2, fornecedor.getCnpj());
+            
+
+            stmt.executeUpdate();
+
+            System.out.println("Fornecedor inserido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir fornecedor: " + e.getMessage());
+        }
+    }
 
     
-    public void adicionar(Fornecedor fornecedor) {
-        listaFornecedores.add(fornecedor);
-        salvarArquivo();
-    }
-
-   
     public List<Fornecedor> listar() {
-        return listaFornecedores;
+
+        List<Fornecedor> lista = new ArrayList<>();
+        String sql = "SELECT * FROM fornecedor";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Fornecedor f = new Fornecedor();
+                f.setIdFornecedor(rs.getInt("idFornecedor"));
+                f.setNomeFornecedor(rs.getString("nomeFornecedor"));
+                f.setCnpj(rs.getString("cnpj"));
+               
+                lista.add(f);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar fornecedores: " + e.getMessage());
+        }
+
+        return lista;
     }
 
     
     public Fornecedor buscarPorId(int idFornecedor) {
-        for (Fornecedor f : listaFornecedores) {
-            if (f.getIdFornecedor() == idFornecedor) {
-                return f;
+
+        String sql = "SELECT * FROM fornecedor WHERE idFornecedor = ?";
+        Fornecedor fornecedor = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idFornecedor);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                fornecedor = new Fornecedor();
+                fornecedor.setIdFornecedor(rs.getInt("idFornecedor"));
+                fornecedor.setNomeFornecedor(rs.getString("nomeFornecedor"));
+                fornecedor.setCnpj(rs.getString("cnpj"));
+                
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar fornecedor: " + e.getMessage());
         }
-        return null;
+
+        return fornecedor;
+    }
+
+    
+    public void atualizar(Fornecedor fornecedor) {
+
+        String sql = "UPDATE fornecedor SET nomeFornecedor = ?, cnpj = ? WHERE idFornecedor = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, fornecedor.getNomeFornecedor());
+            stmt.setString(2, fornecedor.getCnpj());
+            stmt.setInt(3, fornecedor.getIdFornecedor());
+
+            stmt.executeUpdate();
+
+            System.out.println("Fornecedor atualizado com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar fornecedor: " + e.getMessage());
+        }
     }
 
  
-  public void atualizar(Fornecedor f) {
-        for (int i = 0; i < listaFornecedores.size(); i++) {
-            if (listaFornecedores.get(i).getIdFornecedor() == f.getIdFornecedor()) {
-                listaFornecedores.set(i, f);
-                break;
-            }
-        }
-        salvarArquivo();
-    }
+    public void remover(int idFornecedor) {
 
-    
-   public void remover(int id) {
-        listaFornecedores.removeIf(c -> c.getIdFornecedor() == id);
-        salvarArquivo();
-    }
-    
-    
-  private void salvarArquivo() {
-        try (ObjectOutputStream oos =
-                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
+        String sql = "DELETE FROM fornecedor WHERE idFornecedor = ?";
 
-            oos.writeObject(listaFornecedores);
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        } catch (Exception e) {
-            e.printStackTrace();
+            stmt.setInt(1, idFornecedor);
+            stmt.executeUpdate();
+
+            System.out.println("Fornecedor removido com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover fornecedor: " + e.getMessage());
         }
     }
-
-    private void carregarArquivo() {
-        try (ObjectInputStream ois =
-                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
-
-            listaFornecedores = (List<Fornecedor>) ois.readObject();
-
-        } catch (Exception e) {
-            listaFornecedores = new ArrayList<>();
-        }
-    }    
 }

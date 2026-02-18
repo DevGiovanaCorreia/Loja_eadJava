@@ -4,11 +4,13 @@
  */
 package Dao;
 
+import Conexão.Conexao;
 import data.Categoria;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,84 +19,135 @@ import java.util.List;
  * @author vitor
  */
 public class CategoriaDAO {
-    private static List<Categoria> listaCategorias = new ArrayList<>();
-  private final String ARQUIVO = "categorias.dat";
-  
-  
-  public CategoriaDAO(){
-      carregarArquivo();
-  }
-    
-   
- public void adicionar(Categoria c) {
-        listaCategorias.add(c);
-        salvarArquivo();
+  public void adicionar(Categoria categoria) {
+
+        String sql = "INSERT INTO categoria (nomeCategoria) VALUES (?)";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, categoria.getNomeCategoria());
+
+            stmt.executeUpdate();
+
+            System.out.println("Categoria inserida com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir categoria: " + e.getMessage());
+        }
     }
- 
+
+    
     public List<Categoria> listar() {
-        return listaCategorias;
+
+        List<Categoria> lista = new ArrayList<>();
+        String sql = "SELECT * FROM categoria";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Categoria c = new Categoria();
+                c.setIdCategoria(rs.getInt("idCategoria"));
+                c.setNomeCategoria(rs.getString("nomeCategoria"));
+
+                lista.add(c);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar categorias: " + e.getMessage());
+        }
+
+        return lista;
     }
 
     
     public Categoria buscarPorId(int idCategoria) {
-        for (Categoria c : listaCategorias) {
-            if (c.getIdCategoria() == idCategoria) {
-                return c;
+
+        String sql = "SELECT * FROM categoria WHERE idCategoria = ?";
+        Categoria categoria = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idCategoria);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar categoria: " + e.getMessage());
         }
-        return null;
+
+        return categoria;
+    }
+
+    
+    public Categoria buscarPorNome(String nome) {
+
+        String sql = "SELECT * FROM categoria WHERE nomeCategoria = ?";
+        Categoria categoria = null;
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, nome);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                categoria = new Categoria();
+                categoria.setIdCategoria(rs.getInt("idCategoria"));
+                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar categoria por nome: " + e.getMessage());
+        }
+
+        return categoria;
+    }
+
+  
+    public void atualizar(Categoria categoria) {
+
+        String sql = "UPDATE categoria SET nomeCategoria = ? WHERE idCategoria = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, categoria.getNomeCategoria());
+            stmt.setInt(2, categoria.getIdCategoria());
+
+            stmt.executeUpdate();
+
+            System.out.println("Categoria atualizada com sucesso!");
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao atualizar categoria: " + e.getMessage());
+        }
     }
 
    
-    public Categoria buscarPorNome(String nome) {
-        for (Categoria c : listaCategorias) {
-            if (c.getNomeCategoria().equalsIgnoreCase(nome)) {
-                return c;
-            }
-        }
-        return null;
-    }
+    public void remover(int idCategoria) {
 
-    
-   public void atualizar(Categoria c) {
-        for (int i = 0; i < listaCategorias.size(); i++) {
-            if (listaCategorias.get(i).getIdCategoria() == c.getIdCategoria()) {
-                listaCategorias.set(i, c);
-                break;
-            }
-        }
-        salvarArquivo();
-    }
+        String sql = "DELETE FROM categoria WHERE idCategoria = ?";
 
- 
-    public void remover(int id) {
-        listaCategorias.removeIf(c -> c.getIdCategoria() == id);
-        salvarArquivo();
-    }
-    
-     private void salvarArquivo() {
-        try (ObjectOutputStream oos =
-                 new ObjectOutputStream(
-                     new FileOutputStream(ARQUIVO))) {
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            oos.writeObject(listaCategorias);
+            stmt.setInt(1, idCategoria);
+            stmt.executeUpdate();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
+            System.out.println("Categoria removida com sucesso!");
 
-    
-    private void carregarArquivo() {
-        try (ObjectInputStream ois =
-                 new ObjectInputStream(
-                     new FileInputStream(ARQUIVO))) {
-
-            listaCategorias =
-                (List<Categoria>) ois.readObject();
-
-        } catch (Exception e) {
-            listaCategorias = new ArrayList<>();
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover categoria: " + e.getMessage());
         }
     }
 }

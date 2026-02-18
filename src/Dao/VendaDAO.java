@@ -4,13 +4,18 @@
  */
 package Dao;
 
+import Conexão.Conexao;
 import data.Cliente;
 import data.Funcionario;
+import java.sql.Statement;
+
+
 import data.Venda;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,99 +24,111 @@ import java.util.List;
  * @author vitor
  */
 public class VendaDAO {
-     private static List<Venda> listaVendas = new ArrayList<>();
-private final String ARQUIVO = "vendas.dat";
-
-
-
-  public VendaDAO() {
-        carregarArquivo();
-    }
-  
     public void adicionar(Venda venda) {
-        listaVendas.add(venda);
-        salvarArquivo();
+
+        String sql = "INSERT INTO venda (formaDePagamento, idCliente, idFuncionario) " +
+                     "VALUES (?, ?, ?)";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            stmt.setString(1,venda.getFormaDePagamento());
+            stmt.setInt(2, venda.getCliente().getIdCliente());
+            stmt.setInt(3, venda.getFuncionario().getIdFuncionario());
+            
+
+            stmt.executeUpdate();
+
+            
+            ResultSet rs = stmt.getGeneratedKeys();
+            if (rs.next()) {
+                venda.setIdVenda(rs.getInt(1));
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao inserir venda: " + e.getMessage());
+        }
     }
 
-  
+   
     public List<Venda> listar() {
-        return listaVendas;
+
+        List<Venda> lista = new ArrayList<>();
+
+        String sql = "SELECT v.*, c.nomeCliente, f.nomeFuncionario " +
+                     "FROM venda v " +
+                     "JOIN cliente c ON v.idCliente = c.idCliente " +
+                     "JOIN funcionario f ON v.idFuncionario = f.idFuncionario";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
+
+            while (rs.next()) {
+
+                Cliente cliente = new Cliente();
+                cliente.setIdCliente(rs.getInt("idCliente"));
+                cliente.setNomeCliente(rs.getString("nomeCliente"));
+
+                Funcionario funcionario = new Funcionario();
+                funcionario.setIdFuncionario(rs.getInt("idFuncionario"));
+                funcionario.setNomeFuncionario(rs.getString("nomeFuncionario"));
+
+                Venda v = new Venda();
+                v.setIdVenda(rs.getInt("idVenda"));
+                v.setCliente(cliente);
+                v.setFuncionario(funcionario);
+                
+
+                lista.add(v);
+            }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao listar vendas: " + e.getMessage());
+        }
+
+        return lista;
     }
 
- 
+    
     public Venda buscarPorId(int idVenda) {
-        for (Venda v : listaVendas) {
-            if (v.getIdVenda() == idVenda) {
+
+        String sql = "SELECT * FROM venda WHERE idVenda = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idVenda);
+            ResultSet rs = stmt.executeQuery();
+
+            if (rs.next()) {
+                Venda v = new Venda();
+                v.setIdVenda(rs.getInt("idVenda"));
+               
                 return v;
             }
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao buscar venda: " + e.getMessage());
         }
+
         return null;
     }
 
-
-    public List<Venda> buscarPorCliente(Cliente cliente) {
-        List<Venda> resultado = new ArrayList<>();
-
-        for (Venda v : listaVendas) {
-            if (v.getCliente().getIdCliente() == cliente.getIdCliente()) {
-                resultado.add(v);
-            }
-        }
-        return resultado;
-    }
-
-   
-    public List<Venda> buscarPorFuncionario(Funcionario funcionario) {
-        List<Venda> resultado = new ArrayList<>();
-
-        for (Venda v : listaVendas) {
-            if (v.getFuncionario().getIdFuncionario()
-                    == funcionario.getIdFuncionario()) {
-
-                resultado.add(v);
-            }
-        }
-        return resultado;
-    }
-
-   
-      public void atualizar(Venda v) {
-        for (int i = 0; i < listaVendas.size(); i++) {
-            if (listaVendas.get(i).getIdVenda() == v.getIdVenda()) {
-                listaVendas.set(i, v);
-                break;
-            }
-        }
-        salvarArquivo();
-    }
-
     
-   public void remover(int id) {
-        listaVendas.removeIf(c -> c.getIdVenda() == id);
-        salvarArquivo();
+    public void remover(int idVenda) {
+
+        String sql = "DELETE FROM venda WHERE idVenda = ?";
+
+        try (Connection conn = Conexao.conectar();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setInt(1, idVenda);
+            stmt.executeUpdate();
+
+        } catch (SQLException e) {
+            System.out.println("Erro ao remover venda: " + e.getMessage());
+        }
     }
     
-    
-    
-     private void salvarArquivo() {
-        try (ObjectOutputStream oos =
-                 new ObjectOutputStream(new FileOutputStream(ARQUIVO))) {
-
-            oos.writeObject(listaVendas);
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    private void carregarArquivo() {
-        try (ObjectInputStream ois =
-                 new ObjectInputStream(new FileInputStream(ARQUIVO))) {
-
-            listaVendas = (List<Venda>) ois.readObject();
-
-        } catch (Exception e) {
-            listaVendas = new ArrayList<>();
-        }
-    }
 }
