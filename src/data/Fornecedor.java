@@ -22,6 +22,10 @@ public class Fornecedor  implements Serializable{
         this.nomeFornecedor=nomeFornecedor;
         this.cnpj=cnpj;
     }
+    
+    public Fornecedor(){
+        
+    }
 
     public int getIdFornecedor() {
         return idFornecedor;
