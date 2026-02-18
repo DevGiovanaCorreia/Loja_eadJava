@@ -16,16 +16,18 @@ public class Produto implements Serializable {
     private int idProduto;
     private String nomeProduto;
     private double preco;
-    private int quantidadeEstoque;
+    private int quantidade;
     private Categoria categoria;
+    private Fornecedor fornecedor;
     
     
-    public Produto(int idProduto,String nomeProduto,double preco,int quantidadeEstoque, Categoria categoria){
+    public Produto(int idProduto,String nomeProduto,double preco,int quantidadeEstoque, Categoria categoria, Fornecedor fornecedor){
         this.idProduto=idProduto;
         this.nomeProduto=nomeProduto;
         this.preco=preco;
-        this.quantidadeEstoque=quantidadeEstoque;
+        this.quantidade=quantidadeEstoque;
         this.categoria=categoria;
+        this.fornecedor=fornecedor;
     } 
 
     public int getIdProduto() {
@@ -41,7 +43,7 @@ public class Produto implements Serializable {
     }
 
     public int getQuantidadeEstoque() {
-        return quantidadeEstoque;
+        return quantidade;
     }
 
     public void setIdProduto(int idProduto) {
@@ -57,7 +59,7 @@ public class Produto implements Serializable {
     }
 
     public void setQuantidadeEstoque(int quantidadeEstoque) {
-        this.quantidadeEstoque = quantidadeEstoque;
+        this.quantidade = quantidadeEstoque;
     }
 
     public Categoria getCategoria() {

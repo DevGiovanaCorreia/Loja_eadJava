@@ -12,12 +12,12 @@ import java.io.Serializable;
  */
 public class Categoria implements Serializable {
       private int idCategoria;
-    private String nomeCategoria;
+    private String produtoCategoria;
    
     
-    public Categoria(int idCategoria,String nomeCategoria){
+    public Categoria(int idCategoria,String produtoCategoria){
         this.idCategoria=idCategoria;
-        this.nomeCategoria=nomeCategoria;
+        this.produtoCategoria=produtoCategoria;
     }
 
     public int getIdCategoria() {
@@ -25,7 +25,7 @@ public class Categoria implements Serializable {
     }
 
     public String getNomeCategoria() {
-        return nomeCategoria;
+        return produtoCategoria;
     }
 
     public void setIdCategoria(int idCategoria) {
@@ -33,12 +33,12 @@ public class Categoria implements Serializable {
     }
 
     public void setNomeCategoria(String nomeCategoria) {
-        this.nomeCategoria = nomeCategoria;
+        this.produtoCategoria = nomeCategoria;
     }
 
 
      @Override
 public String toString() {
-    return nomeCategoria;
+    return produtoCategoria;
 }
 }

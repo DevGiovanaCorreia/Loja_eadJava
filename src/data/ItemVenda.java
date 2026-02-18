@@ -16,13 +16,13 @@ public class ItemVenda  implements Serializable {
       private int idItem;
       private Produto produto;
       private int quantidade;
-      private double precoUnitario;
+      private double preco_unitario;
 
     public ItemVenda(int idItem, Produto produto, int quantidade, double precoUnitario){
         this.idItem = idItem;
         this.produto = produto;
         this.quantidade = quantidade;
-        this.precoUnitario = precoUnitario;
+        this.preco_unitario = precoUnitario;
     }
 
     public int getIdItem() {
@@ -38,7 +38,7 @@ public class ItemVenda  implements Serializable {
     }
 
     public double getPrecoUnitario() {
-        return precoUnitario;
+        return preco_unitario;
     }
 
     public void setIdItem(int idItem) {
@@ -54,11 +54,11 @@ public class ItemVenda  implements Serializable {
     }
 
     public void setPrecoUnitario(double precoUnitario) {
-        this.precoUnitario = precoUnitario;
+        this.preco_unitario = precoUnitario;
     }
   
  public double getSubtotal() {
-    return quantidade * precoUnitario;
+    return quantidade * preco_unitario;
 }
     
 }

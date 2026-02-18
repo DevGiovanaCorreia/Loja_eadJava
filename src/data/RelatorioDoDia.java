@@ -12,11 +12,14 @@ import java.io.Serializable;
  */
 public class RelatorioDoDia implements Serializable{
        private int idRelatorio;
+       private String totalVendasDoDia;
       private Funcionario funcionario;
+      
     
 
-    public RelatorioDoDia(int idRelatorio, Funcionario funcionario) {
+    public RelatorioDoDia(int idRelatorio,String  totalVendasDoDia, Funcionario funcionario) {
         this.idRelatorio = idRelatorio;
+        this.totalVendasDoDia=totalVendasDoDia;
         this.funcionario = funcionario;
     }
 
@@ -35,6 +38,16 @@ public class RelatorioDoDia implements Serializable{
     public void setFuncionario(Funcionario funcionario) {
         this.funcionario = funcionario;
     }
+
+    public String getTotalVendasDoDia() {
+        return totalVendasDoDia;
+    }
+
+    public void setTotalVendasDoDia(String totalVendasDoDia) {
+        this.totalVendasDoDia = totalVendasDoDia;
+    }
+    
+    
     
     
 
