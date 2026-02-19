@@ -369,7 +369,7 @@ private void carregarFornecedor() {
         atualizarTabela();
         limparCampos();
     } else {
-        JOptionPane.showMessageDialog(this, "Selecione um cliente na tabela");
+        JOptionPane.showMessageDialog(this, "Selecione um produto na tabela");
     }
     }//GEN-LAST:event_btnExcluirActionPerformed
 

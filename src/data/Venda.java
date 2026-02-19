@@ -5,6 +5,7 @@
 package data;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -27,9 +28,12 @@ public class Venda implements Serializable {
         this.itens=itens;
     }
 
-     public Venda(){
-         
-     }
+     public Venda() {
+    this.itens = new ArrayList<>();
+}
+
+   
+     
     public int getIdVenda() {
         return idVenda;
     }

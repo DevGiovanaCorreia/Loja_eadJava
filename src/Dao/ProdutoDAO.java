@@ -138,22 +138,27 @@ public class ProdutoDAO {
     }
 
     
-    public void remover(int idProdutos) {
+   public void remover(int idProduto) {
 
-        String sql = "DELETE FROM produtos WHERE idProdutos = ?";
+    String sqlItem = "DELETE FROM item_venda WHERE idProdutos = ?";
+    String sqlProduto = "DELETE FROM produtos WHERE idProdutos = ?";
 
-        try (Connection conn = Conexao.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+    try (Connection conn = Conexao.conectar()) {
 
-            stmt.setInt(1, idProdutos);
-            stmt.executeUpdate();
+        PreparedStatement stmtItem = conn.prepareStatement(sqlItem);
+        stmtItem.setInt(1, idProduto);
+        stmtItem.executeUpdate();
 
-            System.out.println("Produto removido com sucesso!");
+        PreparedStatement stmtProduto = conn.prepareStatement(sqlProduto);
+        stmtProduto.setInt(1, idProduto);
+        int linhas = stmtProduto.executeUpdate();
 
-        } catch (SQLException e) {
-            System.out.println("Erro ao remover produto: " + e.getMessage());
-        }
+        System.out.println("Linhas afetadas: " + linhas);
+
+    } catch (SQLException e) {
+        System.out.println("Erro ao remover produto: " + e.getMessage());
     }
+}
 
     
     public void atualizarEstoque(int idProduto, int novaQuantidade) {

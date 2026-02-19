@@ -7,6 +7,8 @@ package Dao;
 import Conexão.Conexao;
 import data.Cliente;
 import data.Funcionario;
+import data.ItemVenda;
+import data.Produto;
 import java.sql.Statement;
 
 
@@ -26,29 +28,42 @@ import java.util.List;
 public class VendaDAO {
     public void adicionar(Venda venda) {
 
-        String sql = "INSERT INTO venda (formaDePagamento, idCliente, idFuncionario) " +
-                     "VALUES (?, ?, ?)";
+    String sql = "INSERT INTO venda (formaDePagamento, idCliente, idFuncionario) VALUES (?, ?, ?)";
 
-        try (Connection conn = Conexao.conectar();
-             PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+    try (Connection conn = Conexao.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            stmt.setString(1,venda.getFormaDePagamento());
-            stmt.setInt(2, venda.getCliente().getIdCliente());
-            stmt.setInt(3, venda.getFuncionario().getIdFuncionario());
-            
+        stmt.setString(1, venda.getFormaDePagamento());
+        stmt.setInt(2, venda.getCliente().getIdCliente());
+        stmt.setInt(3, venda.getFuncionario().getIdFuncionario());
 
-            stmt.executeUpdate();
+        stmt.executeUpdate();
 
-            
-            ResultSet rs = stmt.getGeneratedKeys();
-            if (rs.next()) {
-                venda.setIdVenda(rs.getInt(1));
-            }
-
-        } catch (SQLException e) {
-            System.out.println("Erro ao inserir venda: " + e.getMessage());
+        ResultSet rs = stmt.getGeneratedKeys();
+        if (rs.next()) {
+            venda.setIdVenda(rs.getInt(1));
         }
+
+        
+        for (ItemVenda item : venda.getItens()) {
+
+            String sqlItem = "INSERT INTO item_venda (idVenda, idProdutos, quantidade, preco_unitario) VALUES (?, ?, ?, ?)";
+
+            try (PreparedStatement stmtItem = conn.prepareStatement(sqlItem)) {
+
+                stmtItem.setInt(1, venda.getIdVenda());
+                stmtItem.setInt(2, item.getProduto().getIdProduto());
+                stmtItem.setInt(3, item.getQuantidade());
+                stmtItem.setDouble(4, item.getPrecoUnitario());
+
+                stmtItem.executeUpdate();
+            }
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+}
 
    
     public List<Venda> listar() {
@@ -143,13 +158,16 @@ public class VendaDAO {
             f.setIdFuncionario(rs.getInt("idFuncionario"));
             f.setNomeFuncionario(rs.getString("nomeFuncionario"));
 
-            Venda v = new Venda();
-            v.setIdVenda(rs.getInt("idVenda"));
-            v.setFormaDePagamento(rs.getString("formaDePagamento"));
-            v.setCliente(cliente);
-            v.setFuncionario(f);
+           Venda v = new Venda();
+           v.setIdVenda(rs.getInt("idVenda"));
+           v.setFormaDePagamento(rs.getString("formaDePagamento"));
+           v.setCliente(cliente);
+           v.setFuncionario(f);
+            
+           
+           v.setItens(buscarItensPorVenda(v.getIdVenda()));
 
-            lista.add(v);
+         lista.add(v);
         }
 
     } catch (SQLException e) {
@@ -174,5 +192,43 @@ public class VendaDAO {
             System.out.println("Erro ao remover venda: " + e.getMessage());
         }
     }
+    
+    private List<ItemVenda> buscarItensPorVenda(int idVenda) {
+
+    List<ItemVenda> lista = new ArrayList<>();
+
+    String sql = "SELECT iv.*, p.nomeProduto " +
+                 "FROM item_venda iv " +
+                 "JOIN produtos p ON iv.idProdutos = p.idProdutos " +
+                 "WHERE iv.idVenda = ?";
+
+    try (Connection conn = Conexao.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, idVenda);
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+
+            Produto produto = new Produto();
+            produto.setIdProduto(rs.getInt("idProdutos"));
+            produto.setNomeProduto(rs.getString("nomeProduto"));
+
+            ItemVenda item = new ItemVenda(
+                    rs.getInt("idItem"),
+                    produto,
+                    rs.getInt("quantidade"),
+                    rs.getDouble("preco_unitario")
+            );
+
+            lista.add(item);
+        }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+
+    return lista;
+}
     
 }
