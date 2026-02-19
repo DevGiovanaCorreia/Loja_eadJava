@@ -7,6 +7,7 @@ package view;
 import Dao.CategoriaDAO;
 import Dao.ProdutoDAO;
 import data.Categoria;
+import data.Fornecedor;
 import data.Produto;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
@@ -87,7 +88,7 @@ private void carregarCategorias() {
         jLabel5 = new javax.swing.JLabel();
         txtId = new javax.swing.JTextField();
         jLabel6 = new javax.swing.JLabel();
-        btnFornecedor = new javax.swing.JComboBox<>();
+        cmbFornecedor = new javax.swing.JComboBox<>();
         jPanel2 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
         tabelaProduto = new javax.swing.JTable();
@@ -152,7 +153,7 @@ private void carregarCategorias() {
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(25, Short.MAX_VALUE)
+                .addContainerGap(57, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -173,7 +174,7 @@ private void carregarCategorias() {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel6)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                        .addComponent(btnFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(cmbFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(44, 44, 44))
         );
         jPanel1Layout.setVerticalGroup(
@@ -202,7 +203,7 @@ private void carregarCategorias() {
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel6)
-                    .addComponent(btnFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(cmbFornecedor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnCadastrar)
@@ -217,11 +218,11 @@ private void carregarCategorias() {
 
             },
             new String [] {
-                "Id", "Nome", "Preço", "Estoque", "Categoria"
+                "Id", "Nome", "Preço", "Estoque", "Categoria", "Fornecedor"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class, java.lang.String.class
+                java.lang.Integer.class, java.lang.String.class, java.lang.Object.class, java.lang.Integer.class, java.lang.String.class, java.lang.String.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -241,14 +242,13 @@ private void carregarCategorias() {
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel2Layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 375, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(289, Short.MAX_VALUE)
                 .addComponent(btnVoltar)
                 .addGap(59, 59, 59))
+            .addGroup(jPanel2Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 0, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -288,8 +288,9 @@ private void carregarCategorias() {
  Double preco = Double.parseDouble(txtPreco.getText());
  int estoque = Integer.parseInt(txtEstoque.getText());
  Categoria categoria = (Categoria) cmbCategoria.getSelectedItem();
+ Fornecedor fornecedor = (Fornecedor) cmbFornecedor.getSelectedItem();
  
- Produto p = new Produto(id,nome,preco,estoque,categoria);
+ Produto p = new Produto(id,nome,preco,estoque,categoria,fornecedor);
  
  produtoDAO.adicionar(p);
  
@@ -326,8 +327,9 @@ private void carregarCategorias() {
         double preco = Double.parseDouble(txtPreco.getText());
         int estoque = Integer.parseInt(txtEstoque.getText());
         Categoria categoria = (Categoria) cmbCategoria.getSelectedItem();
+        Fornecedor fornecedor = (Fornecedor) cmbFornecedor.getSelectedItem();
 
-        Produto p = new Produto(id, nome, preco, estoque, categoria);
+        Produto p = new Produto(id, nome, preco, estoque, categoria,fornecedor);
 
         produtoDAO.atualizar(p);
 
@@ -404,10 +406,10 @@ private void carregarCategorias() {
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnCadastrar;
     private javax.swing.JButton btnExcluir;
-    private javax.swing.JComboBox<Fornecedor> btnFornecedor;
     private javax.swing.JButton btnLimpar;
     private javax.swing.JButton btnVoltar;
     private javax.swing.JComboBox<Categoria> cmbCategoria;
+    private javax.swing.JComboBox<Fornecedor> cmbFornecedor;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;

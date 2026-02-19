@@ -114,6 +114,50 @@ public class VendaDAO {
 
         return null;
     }
+    
+    
+    public List<Venda> buscarPorFuncionario(Funcionario funcionario) {
+
+    List<Venda> lista = new ArrayList<>();
+
+    String sql = "SELECT v.*, c.nomeCliente, f.nomeFuncionario " +
+                 "FROM venda v " +
+                 "JOIN cliente c ON v.idCliente = c.idCliente " +
+                 "JOIN funcionario f ON v.idFuncionario = f.idFuncionario " +
+                 "WHERE v.idFuncionario = ?";
+
+    try (Connection conn = Conexao.conectar();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+        stmt.setInt(1, funcionario.getIdFuncionario());
+
+        ResultSet rs = stmt.executeQuery();
+
+        while (rs.next()) {
+
+            Cliente cliente = new Cliente();
+            cliente.setIdCliente(rs.getInt("idCliente"));
+            cliente.setNomeCliente(rs.getString("nomeCliente"));
+
+            Funcionario f = new Funcionario();
+            f.setIdFuncionario(rs.getInt("idFuncionario"));
+            f.setNomeFuncionario(rs.getString("nomeFuncionario"));
+
+            Venda v = new Venda();
+            v.setIdVenda(rs.getInt("idVenda"));
+            v.setFormaDePagamento(rs.getString("formaDePagamento"));
+            v.setCliente(cliente);
+            v.setFuncionario(f);
+
+            lista.add(v);
+        }
+
+    } catch (SQLException e) {
+        System.out.println("Erro ao buscar vendas por funcionário: " + e.getMessage());
+    }
+
+    return lista;
+}
 
     
     public void remover(int idVenda) {
