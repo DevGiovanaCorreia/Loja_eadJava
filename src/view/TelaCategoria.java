@@ -23,7 +23,7 @@ private void atualizarTabela() {
     for (Categoria c: categoriaDAO.listar()) {
         model.addRow(new Object[]{
             c.getIdCategoria(),
-            c.getNomeCategoria()
+            c.getProdutoCategoria()
          
         
            

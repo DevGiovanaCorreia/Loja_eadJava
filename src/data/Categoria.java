@@ -28,7 +28,7 @@ public class Categoria implements Serializable {
         return idCategoria;
     }
 
-    public String getNomeCategoria() {
+    public String getProdutoCategoria() {
         return produtoCategoria;
     }
 
@@ -36,8 +36,8 @@ public class Categoria implements Serializable {
         this.idCategoria = idCategoria;
     }
 
-    public void setNomeCategoria(String nomeCategoria) {
-        this.produtoCategoria = nomeCategoria;
+    public void setProdutoCategoria(String produtoCategoria) {
+        this.produtoCategoria = produtoCategoria;
     }
 
 

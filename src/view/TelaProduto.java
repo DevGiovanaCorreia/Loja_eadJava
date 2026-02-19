@@ -5,6 +5,7 @@
 package view;
 
 import Dao.CategoriaDAO;
+import Dao.FornecedorDAO;
 import Dao.ProdutoDAO;
 import data.Categoria;
 import data.Fornecedor;
@@ -29,8 +30,9 @@ private void atualizarTabela() {
             p.getIdProduto(),
             p.getNomeProduto(),
             p.getPreco(),
-            p.getQuantidadeEstoque(),
-            p.getCategoria()
+            p.getQuantidade(),
+            p.getCategoria(),
+                p.getFornecedor()
             
          
         
@@ -55,11 +57,24 @@ private void carregarCategorias() {
         cmbCategoria.addItem(c);
     }
 }
+
+private FornecedorDAO forncedorDAO = new FornecedorDAO();
+
+private void carregarFornecedor() {
+
+    cmbFornecedor.removeAllItems();
+
+    for (Fornecedor f : forncedorDAO.listar()) {
+        cmbFornecedor.addItem(f);   
+    }
+}
+
     public TelaProduto() {
         initComponents();
           model = (DefaultTableModel) tabelaProduto.getModel();
         atualizarTabela();
          carregarCategorias();
+         carregarFornecedor();
         limparCampos();
     }
 
@@ -153,7 +168,7 @@ private void carregarCategorias() {
                     .addComponent(txtId, javax.swing.GroupLayout.PREFERRED_SIZE, 71, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel1Layout.createSequentialGroup()
-                .addContainerGap(57, Short.MAX_VALUE)
+                .addContainerGap(54, Short.MAX_VALUE)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jLabel4)
@@ -243,7 +258,7 @@ private void carregarCategorias() {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel2Layout.createSequentialGroup()
-                .addContainerGap(289, Short.MAX_VALUE)
+                .addContainerGap(286, Short.MAX_VALUE)
                 .addComponent(btnVoltar)
                 .addGap(59, 59, 59))
             .addGroup(jPanel2Layout.createSequentialGroup()

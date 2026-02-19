@@ -23,14 +23,14 @@ import java.util.List;
 public class ProdutoDAO {
        public void adicionar(Produto produto) {
 
-        String sql = "INSERT INTO produto (nomeProduto, preco, quantidade, idCategoria, idFornecedor) VALUES (?, ?, ?, ?,?)";
+        String sql = "INSERT INTO produtos (nomeProduto, preco, quantidade, idCategoria, idFornecedor) VALUES (?, ?, ?, ?,?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, produto.getNomeProduto());
             stmt.setDouble(2, produto.getPreco());
-            stmt.setInt(3, produto.getQuantidadeEstoque());
+            stmt.setInt(3, produto.getQuantidade());
             stmt.setInt(4, produto.getCategoria().getIdCategoria());
             stmt.setInt(5,produto.getFornecedor().getIdFornecedor());
 
@@ -48,8 +48,8 @@ public class ProdutoDAO {
 
         List<Produto> lista = new ArrayList<>();
 
-        String sql = "SELECT p.*, c.nomeCategoria, f.nomeFornecedor " +
-             "FROM produto p " +
+        String sql = "SELECT p.*, c.produtoCategoria, f.nomeFornecedor " +
+             "FROM produtos p " +
              "JOIN categoria c ON p.idCategoria = c.idCategoria " +
              "JOIN fornecedor f ON p.idFornecedor = f.idFornecedor";
 
@@ -61,7 +61,7 @@ public class ProdutoDAO {
 
                 Categoria categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
-                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+                categoria.setProdutoCategoria(rs.getString("produtoCategoria"));
 
                 Fornecedor fornecedor = new Fornecedor();
                 fornecedor.setIdFornecedor(rs.getInt("idFornecedor"));
@@ -69,10 +69,10 @@ public class ProdutoDAO {
                 
                 
                 Produto p = new Produto();
-                p.setIdProduto(rs.getInt("idProduto"));
+                p.setIdProduto(rs.getInt("idProdutos"));
                 p.setNomeProduto(rs.getString("nomeProduto"));
                 p.setPreco(rs.getDouble("preco"));
-                p.setQuantidadeEstoque(rs.getInt("quantidadeEstoque"));
+                p.setQuantidade(rs.getInt("quantidade"));
                 p.setCategoria(categoria);
                 p.setFornecedor(fornecedor);
 
@@ -87,23 +87,23 @@ public class ProdutoDAO {
     }
 
     
-    public Produto buscarPorId(int idProduto) {
+    public Produto buscarPorId(int idProdutos) {
 
-        String sql = "SELECT * FROM produto WHERE idProduto = ?";
+        String sql = "SELECT * FROM produtos WHERE idProdutos = ?";
         Produto produto = null;
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idProduto);
+            stmt.setInt(1, idProdutos);
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
                 produto = new Produto();
-                produto.setIdProduto(rs.getInt("idProduto"));
+                produto.setIdProduto(rs.getInt("idProdutos"));
                 produto.setNomeProduto(rs.getString("nomeProduto"));
                 produto.setPreco(rs.getDouble("preco"));
-                produto.setQuantidadeEstoque(rs.getInt("quantidadeEstoque"));
+                produto.setQuantidade(rs.getInt("quantidade"));
             }
 
         } catch (SQLException e) {
@@ -116,14 +116,14 @@ public class ProdutoDAO {
     
     public void atualizar(Produto produto) {
 
-        String sql = "UPDATE produto SET nomeProduto = ?, preco = ?, quantidade = ?, idCategoria = ? , idFornecedor = ? WHERE idProduto = ?";
+        String sql = "UPDATE produtos SET nomeProduto = ?, preco = ?, quantidade = ?, idCategoria = ? , idFornecedor = ? WHERE idProdutos = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, produto.getNomeProduto());
             stmt.setDouble(2, produto.getPreco());
-            stmt.setInt(3, produto.getQuantidadeEstoque());
+            stmt.setInt(3, produto.getQuantidade());
             stmt.setInt(4, produto.getCategoria().getIdCategoria());
             stmt.setInt(5,produto.getFornecedor().getIdFornecedor());
             stmt.setInt(6, produto.getIdProduto());
@@ -138,14 +138,14 @@ public class ProdutoDAO {
     }
 
     
-    public void remover(int idProduto) {
+    public void remover(int idProdutos) {
 
-        String sql = "DELETE FROM produto WHERE idProduto = ?";
+        String sql = "DELETE FROM produtos WHERE idProdutos = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setInt(1, idProduto);
+            stmt.setInt(1, idProdutos);
             stmt.executeUpdate();
 
             System.out.println("Produto removido com sucesso!");
@@ -158,7 +158,7 @@ public class ProdutoDAO {
     
     public void atualizarEstoque(int idProduto, int novaQuantidade) {
 
-        String sql = "UPDATE produto SET quantidade = ? WHERE idProduto = ?";
+        String sql = "UPDATE produtos SET quantidade = ? WHERE idProdutos = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

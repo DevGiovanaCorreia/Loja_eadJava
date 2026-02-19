@@ -21,11 +21,11 @@ public class Produto implements Serializable {
     private Fornecedor fornecedor;
     
     
-    public Produto(int idProduto,String nomeProduto,double preco,int quantidadeEstoque, Categoria categoria, Fornecedor fornecedor){
+    public Produto(int idProduto,String nomeProduto,double preco,int quantidade, Categoria categoria, Fornecedor fornecedor){
         this.idProduto=idProduto;
         this.nomeProduto=nomeProduto;
         this.preco=preco;
-        this.quantidade=quantidadeEstoque;
+        this.quantidade=quantidade;
         this.categoria=categoria;
         this.fornecedor=fornecedor;
     } 
@@ -47,7 +47,7 @@ public class Produto implements Serializable {
         return preco;
     }
 
-    public int getQuantidadeEstoque() {
+    public int getQuantidade() {
         return quantidade;
     }
 
@@ -63,8 +63,8 @@ public class Produto implements Serializable {
         this.preco = preco;
     }
 
-    public void setQuantidadeEstoque(int quantidadeEstoque) {
-        this.quantidade = quantidadeEstoque;
+    public void setQuantidade(int quantidade) {
+        this.quantidade = quantidade;
     }
 
     public Categoria getCategoria() {
@@ -75,17 +75,12 @@ public class Produto implements Serializable {
         this.categoria = categoria;
     }
 
-    public int getQuantidade() {
-        return quantidade;
-    }
+  
 
     public Fornecedor getFornecedor() {
         return fornecedor;
     }
 
-    public void setQuantidade(int quantidade) {
-        this.quantidade = quantidade;
-    }
 
     public void setFornecedor(Fornecedor fornecedor) {
         this.fornecedor = fornecedor;

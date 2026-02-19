@@ -20,7 +20,7 @@ public class FuncionarioDAO {
  
     public void adicionar(Funcionario funcionario) {
 
-        String sql = "INSERT INTO funcionario (nomeFuncionario, cpf, cargo, telefone) VALUES (?, ?)";
+        String sql = "INSERT INTO funcionario (nomeFuncionario, cpf) VALUES (?, ?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {

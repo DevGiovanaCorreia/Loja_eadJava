@@ -21,12 +21,12 @@ import java.util.List;
 public class CategoriaDAO {
   public void adicionar(Categoria categoria) {
 
-        String sql = "INSERT INTO categoria (nomeCategoria) VALUES (?)";
+        String sql = "INSERT INTO categoria (produtoCategoria) VALUES (?)";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, categoria.getNomeCategoria());
+            stmt.setString(1, categoria.getProdutoCategoria());
 
             stmt.executeUpdate();
 
@@ -51,7 +51,7 @@ public class CategoriaDAO {
 
                 Categoria c = new Categoria();
                 c.setIdCategoria(rs.getInt("idCategoria"));
-                c.setNomeCategoria(rs.getString("nomeCategoria"));
+                c.setProdutoCategoria(rs.getString("produtoCategoria"));
 
                 lista.add(c);
             }
@@ -78,7 +78,7 @@ public class CategoriaDAO {
             if (rs.next()) {
                 categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
-                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+                categoria.setProdutoCategoria(rs.getString("produtoCategoria"));
             }
 
         } catch (SQLException e) {
@@ -91,7 +91,7 @@ public class CategoriaDAO {
     
     public Categoria buscarPorNome(String nome) {
 
-        String sql = "SELECT * FROM categoria WHERE nomeCategoria = ?";
+        String sql = "SELECT * FROM categoria WHERE produtoCategoria = ?";
         Categoria categoria = null;
 
         try (Connection conn = Conexao.conectar();
@@ -103,7 +103,7 @@ public class CategoriaDAO {
             if (rs.next()) {
                 categoria = new Categoria();
                 categoria.setIdCategoria(rs.getInt("idCategoria"));
-                categoria.setNomeCategoria(rs.getString("nomeCategoria"));
+                categoria.setProdutoCategoria(rs.getString("produtoCategoria"));
             }
 
         } catch (SQLException e) {
@@ -116,12 +116,12 @@ public class CategoriaDAO {
   
     public void atualizar(Categoria categoria) {
 
-        String sql = "UPDATE categoria SET nomeCategoria = ? WHERE idCategoria = ?";
+        String sql = "UPDATE categoria SET produtoCategoria = ? WHERE idCategoria = ?";
 
         try (Connection conn = Conexao.conectar();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-            stmt.setString(1, categoria.getNomeCategoria());
+            stmt.setString(1, categoria.getProdutoCategoria());
             stmt.setInt(2, categoria.getIdCategoria());
 
             stmt.executeUpdate();
